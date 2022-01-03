@@ -6,7 +6,7 @@ import { lastValueFrom } from "rxjs";
 export class OAuthService {
     constructor(private httpService: HttpService) {}
 
-    private async getToken(): Promise<string> {
+    public async getToken(): Promise<string> {
         try {
             const response = this.httpService.request({
                 baseURL: process.env.OAUTH_TOKEN_HOST,
@@ -21,10 +21,5 @@ export class OAuthService {
         } catch (error) {
             Logger.error("Access Token error", error.message);
         }
-    }
-
-    public async getAuthorizationHeaders() {
-        const token = await this.getToken();
-        return token;
     }
 }

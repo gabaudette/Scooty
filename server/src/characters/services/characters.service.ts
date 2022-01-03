@@ -6,13 +6,17 @@ import { Character } from "../entities/characters.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CharacterRepository } from "../repository/characters.repository";
 import { CharacterDto } from "../dto/character.dto";
+import { ConfigService } from "src/config/service/config.service";
+import { RealmRepository } from "src/realms/repository/realms.repository";
+import { Realm } from "src/realms/entities/realms.entity";
 
 @Injectable()
-export class CharactersService {
+export class CharacterService {
     constructor(
         private httpService: HttpService,
-        private oAuthService: OAuthService,
-        @InjectRepository(CharacterRepository) private characterRepository: CharacterRepository
+        private configService: ConfigService,
+        @InjectRepository(CharacterRepository) private characterRepository: CharacterRepository,
+        @InjectRepository(RealmRepository) private realmRepository: RealmRepository
     ) {}
 
     public async test() {}
@@ -23,7 +27,10 @@ export class CharactersService {
     }
 
     public async getCharacter(realmSlug: string, characterName: string): Promise<Character> {
-        const character = await this.characterRepository.findOne({ where: [{ realmSlug: realmSlug, name: characterName }] });
+        const character = await this.characterRepository.findOne({
+            relations: ["realm"],
+            where: [{ realm: { slug: realmSlug }, name: characterName }]
+        });
 
         if (character !== undefined) {
             return character;
@@ -31,10 +38,12 @@ export class CharactersService {
 
         const response = this.httpService.get(
             `${process.env.API_BASE_URI}/profile/wow/character/${realmSlug}/${characterName}`,
-            await this.getHttpConfig()
+            await this.configService.getHttpConfig()
         );
 
         const data = (await lastValueFrom(response)).data;
+
+        const realm: Realm = await this.realmRepository.findOne({ where: [{ slug: realmSlug }] });
 
         Logger.verbose(data);
         const dto: CharacterDto = {
@@ -45,15 +54,14 @@ export class CharactersService {
             race: data.race.name,
             characterClass: data.character_class.name,
             activeSpec: data.active_spec.name,
-            realm: data.realm.name,
-            realmSlug: data.realm.slug,
             level: data.level,
             achievementPoints: data.achievement_points,
             averageItemLevel: data.average_item_level,
             equippedItemLevel: data.equipped_item_level,
             chosenCovenant: data.covenant_progress.chosen_covenant.name,
             renownLevel: data.covenant_progress.renown_level,
-            isPvpMeta: false
+            isPvpMeta: false,
+            realm
         };
 
         Logger.verbose(dto);
@@ -67,16 +75,6 @@ export class CharactersService {
 
     private getPveLeaderBoardCharactersByClass(characterClass: string): Character[] {
         return null;
-    }
-
-    private async getHttpConfig() {
-        const bearer = `Bearer ${await this.oAuthService.getAuthorizationHeaders()}`;
-        const headers = { Authorization: bearer, "Battlenet-Namespace": "profile-us" };
-
-        return {
-            headers: headers,
-            params: { locale: "en_US" }
-        };
     }
 
     // private getPvpLeaderBoardCharactersByClass(characterClass: string): Character[] {

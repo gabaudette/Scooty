@@ -1,15 +1,20 @@
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ConfigModule } from "src/config/config.module";
 import { OAuthModule } from "src/oauth2/oauth.module";
-import { CharactersController } from "./controllers/characters.controller";
-import { Character } from "./entities/characters.entity";
+import { RealmModule } from "src/realms/realms.module";
+import { RealmRepository } from "src/realms/repository/realms.repository";
+import { CharacterController } from "./controllers/characters.controller";
 import { CharacterRepository } from "./repository/characters.repository";
-import { CharactersService } from "./services/characters.service";
+import { CharacterService } from "./services/characters.service";
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([CharacterRepository]),
+        HttpModule,
+        ConfigModule,
+        RealmModule,
+        TypeOrmModule.forFeature([CharacterRepository, RealmRepository])
         // HttpModule.registerAsync({
         //     imports: [OAuthModule],
         //     useFactory: (oAuthService: OAuthService) => ({
@@ -18,10 +23,8 @@ import { CharactersService } from "./services/characters.service";
         //     }),
         //     inject: [OAuthService]
         // }) TODO DOESNT WORK
-        HttpModule,
-        OAuthModule
     ],
-    controllers: [CharactersController],
-    providers: [CharactersService]
+    controllers: [CharacterController],
+    providers: [CharacterService]
 })
-export class CharactersModule {}
+export class CharacterModule {}

@@ -1,5 +1,7 @@
 import { Expose } from "class-transformer";
 import { IsBoolean, IsInt, IsString } from "class-validator";
+import { Realm } from "src/realms/entities/realms.entity";
+import { RealmModule } from "src/realms/realms.module";
 
 export class CharacterDto {
     @Expose()
@@ -31,14 +33,6 @@ export class CharacterDto {
     activeSpec: string;
 
     @Expose()
-    @IsString()
-    realm: string;
-
-    @Expose()
-    @IsString()
-    realmSlug: string;
-
-    @Expose()
     @IsInt()
     level: number;
 
@@ -65,4 +59,7 @@ export class CharacterDto {
     @Expose()
     @IsBoolean()
     isPvpMeta: boolean;
+
+    @Expose()
+    realm: Realm;
 }

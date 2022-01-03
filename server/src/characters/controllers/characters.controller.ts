@@ -1,10 +1,10 @@
 import { Controller, Get, Param, Query } from "@nestjs/common";
 import { Character } from "../entities/characters.entity";
-import { CharactersService } from "../services/characters.service";
+import { CharacterService } from "../services/characters.service";
 
 @Controller("character")
-export class CharactersController {
-    constructor(private service: CharactersService) {}
+export class CharacterController {
+    constructor(private service: CharacterService) {}
 
     @Get(":realmSlug/:characterName")
     public async getCharacter(@Param("realmSlug") realmSlug: string, @Param("characterName") characterName: string): Promise<Character> {

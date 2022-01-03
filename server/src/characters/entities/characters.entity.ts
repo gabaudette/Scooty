@@ -1,4 +1,5 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Realm } from "src/realms/entities/realms.entity";
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()
 export class Character extends BaseEntity {
@@ -26,12 +27,6 @@ export class Character extends BaseEntity {
     @Column({ name: "active_spec" })
     activeSpec: string;
 
-    @Column()
-    realm: string;
-
-    @Column()
-    realmSlug: string;
-
     @Column("int")
     level: number;
 
@@ -52,6 +47,12 @@ export class Character extends BaseEntity {
 
     @Column({ name: "is_pvp_meta", default: false })
     isPvpMeta: boolean;
+
+    @ManyToOne(() => Realm, (realm) => realm.characters)
+    realm: Realm;
+
+    @Column({ name: "realm_id" })
+    realmId: number;
 
     // TODO Linked table that are not provide by the profile api like hunter pets, soulbinds, equipement
 }

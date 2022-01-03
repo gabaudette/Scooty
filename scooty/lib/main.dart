@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:scooty/comparer/character_comparer.page.dart';
+import 'package:scooty/pages/comparer/character_comparer.page.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized(); in the runApp it already WidgetsFlutterBinding.ensureInitialized()
