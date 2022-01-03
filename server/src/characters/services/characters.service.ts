@@ -38,7 +38,7 @@ export class CharacterService {
 
         const response = this.httpService.get(
             `${process.env.API_BASE_URI}/profile/wow/character/${realmSlug}/${characterName}`,
-            await this.configService.getHttpConfig()
+            await this.configService.getHttpConfig("profile-us")
         );
 
         const data = (await lastValueFrom(response)).data;

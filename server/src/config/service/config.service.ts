@@ -5,9 +5,11 @@ import { OAuthService } from "src/oauth2/services/oauth.service";
 export class ConfigService {
     constructor(private oAuthService: OAuthService) {}
 
-    public async getHttpConfig() {
+    // TODO Refactor add the data/profile etc in url
+    // TODO Refactor namespace enum
+    public async getHttpConfig(namespace: string) {
         const bearer = `Bearer ${await this.oAuthService.getToken()}`;
-        const headers = { Authorization: bearer, "Battlenet-Namespace": "profile-us" };
+        const headers = { Authorization: bearer, "Battlenet-Namespace": namespace };
 
         return {
             headers: headers,
