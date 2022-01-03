@@ -1,0 +1,11 @@
+{
+  "arrowParens": "always",
+  "proseWrap": "preserve",
+  "singleQuote": false,
+  "trailingComma": "none",
+  "semi": true,
+  "tabWidth": 4,
+  "useTabs": false,
+  "printWidth": 140,
+  "filepath": "src/"
+}

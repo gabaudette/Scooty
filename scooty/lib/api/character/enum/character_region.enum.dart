@@ -1,0 +1,1 @@
+enum CharacterRegionEnum { us, eu }
